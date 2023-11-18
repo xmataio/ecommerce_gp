@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+    initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+	<title>Admin Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .h1{
+            color:rgb(120, 64, 157);
+        }
+        .h2{
+            color:rgb(121, 191, 229);
+        }
+        .center-label {
+            display: inline-block;
+            column-width: 90px;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .table-text-input {
+            width: 130px;
+        }
+
+        .table-id-field {
+            width: auto;
+            min-width:auto;
+            max-width: auto;
+        }
+
+        .table-button-element {
+            width: 80px;
+            min-width: 30px;
+            max-width: 80px;
+        }
+
+        .table-state-field {
+            width: 80px;
+            min-width: 60px;
+            max-width: 80px;
+        }
+
+        /*Style for the main page*/
+        main{
+            margin: 20px auto;
+            text-align: left;
+        }
+        th, td{
+            border-collapse: collapse;
+            border: 1px solid #000
+        }
+        th, td{
+            padding: 5px;
+        }
+
+        th {
+            text-align: center;  
+        }
+
+        td {
+            width: auto;
+            min-width: auto;
+            max-width: auto;
+        }
+    </style>
+</head>
+<body class="p-3 m-0 border-0 bd-example">
+
+    <!-- Example Code -->
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">Plant Repair Services</span>
+            <ul class="nav nav-underline">
+                <li class="nav-item"><a class="nav-link" aria-current="page" href="/">home</a></li>
+                <li class="nav-item "><a class="nav-link active"href="/adminAssociates">Sales Associates</a></li>
+                <li class="nav-item"><a class="nav-link"href="/adminQuotes">Quotes</a></li>
+                <li class="nav-item"><a class="nav-link"href = "/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+        <h2 class="h2">Our Sales Associates</h2>
+        <p><%= locals.editTableText %></p>
+        <table id="employeeTable" id="table" class="table table-hover table-responsive table-striped shadow-lg p-3 mb-5">
+            <thead>
+                <th scope="col">ID</th>
+                <th scope="col">Username</th>
+                <th scope="col">Name</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Address</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Commission</th>
+            </thead>
+            <% for(let i = 0; i < locals.employees.length; i++) { %>
+                <tr>
+                    <% if(locals.editEmployee == locals.employees[i].employeeID) { %>
+                        <form method="POST" action="/adminAssociates/commit_edit">
+                            <th scope="row" class="table-id-field"><%= locals.employees[i].employeeID %></td>
+                            <td>
+                                <input type="text" class="table-text-input" id="edited_username" name="edited_username" value="<%= locals.employees[i].username%>">
+                            </td>
+                            <td>
+                                <input type="text" class="table-text-input" id="edited_name" name="edited_name" value="<%= locals.employees[i].name %>">
+                            </td>
+                            <td>
+                                <input type="text" class="table-text-input" id="edited_contact" name="edited_contact" value="<%= locals.employees[i].contact%>">
+                            </td>
+                            <td>
+                                <input type="text" class="table-text-input" id="edited_address" name="edited_address" value="<%= locals.employees[i].address%>">
+                            </td>
+                            <td>
+                                <input type="text" class="table-text-input" id="edited_city" name="edited_city" value="<%= locals.employees[i].city%>">
+                            </td>
+                            <td class="table-state-field">
+                                <select name="edited_state" id="edited_state" size="1">
+                                    <option value="" <%= locals.employees[i].state === '' ? 'selected' : '' %>></option>
+                                    <option value="AK" <%= locals.employees[i].state === 'AK' ? 'selected' : '' %>>AK</option>
+                                    <option value="AL" <%= locals.employees[i].state === 'AL' ? 'selected' : '' %>>AL</option>
+                                    <option value="AR" <%= locals.employees[i].state === 'AR' ? 'selected' : '' %>>AR</option>
+                                    <option value="AZ" <%= locals.employees[i].state === 'AZ' ? 'selected' : '' %>>AZ</option>
+                                    <option value="CA" <%= locals.employees[i].state === 'CA' ? 'selected' : '' %>>CA</option>
+                                    <option value="CO" <%= locals.employees[i].state === 'CO' ? 'selected' : '' %>>CO</option>
+                                    <option value="CT" <%= locals.employees[i].state === 'CT' ? 'selected' : '' %>>CT</option>
+                                    <option value="DC" <%= locals.employees[i].state === 'DC' ? 'selected' : '' %>>DC</option>
+                                    <option value="DE" <%= locals.employees[i].state === 'DE' ? 'selected' : '' %>>DE</option>
+                                    <option value="FL" <%= locals.employees[i].state === 'FL' ? 'selected' : '' %>>FL</option>
+                                    <option value="GA" <%= locals.employees[i].state === 'GA' ? 'selected' : '' %>>GA</option>
+                                    <option value="HI" <%= locals.employees[i].state === 'HI' ? 'selected' : '' %>>HI</option>
+                                    <option value="IA" <%= locals.employees[i].state === 'IA' ? 'selected' : '' %>>IA</option>
+                                    <option value="ID" <%= locals.employees[i].state === 'ID' ? 'selected' : '' %>>ID</option>
+                                    <option value="IL" <%= locals.employees[i].state === 'IL' ? 'selected' : '' %>>IL</option>
+                                    <option value="IN" <%= locals.employees[i].state === 'IN' ? 'selected' : '' %>>IN</option>
+                                    <option value="KS" <%= locals.employees[i].state === 'KS' ? 'selected' : '' %>>KS</option>
+                                    <option value="KY" <%= locals.employees[i].state === 'KY' ? 'selected' : '' %>>KY</option>
+                                    <option value="LA" <%= locals.employees[i].state === 'LA' ? 'selected' : '' %>>LA</option>
+                                    <option value="MA" <%= locals.employees[i].state === 'MA' ? 'selected' : '' %>>MA</option>
+                                    <option value="MD" <%= locals.employees[i].state === 'MD' ? 'selected' : '' %>>MD</option>
+                                    <option value="ME" <%= locals.employees[i].state === 'ME' ? 'selected' : '' %>>ME</option>
+                                    <option value="MI" <%= locals.employees[i].state === 'MI' ? 'selected' : '' %>>MI</option>
+                                    <option value="MN" <%= locals.employees[i].state === 'MN' ? 'selected' : '' %>>MN</option>
+                                    <option value="MO" <%= locals.employees[i].state === 'MO' ? 'selected' : '' %>>MO</option>
+                                    <option value="MS" <%= locals.employees[i].state === 'MS' ? 'selected' : '' %>>MS</option>
+                                    <option value="MT" <%= locals.employees[i].state === 'MT' ? 'selected' : '' %>>MT</option>
+                                    <option value="NC" <%= locals.employees[i].state === 'NC' ? 'selected' : '' %>>NC</option>
+                                    <option value="ND" <%= locals.employees[i].state === 'ND' ? 'selected' : '' %>>ND</option>
+                                    <option value="NE" <%= locals.employees[i].state === 'NE' ? 'selected' : '' %>>NE</option>
+                                    <option value="NH" <%= locals.employees[i].state === 'NH' ? 'selected' : '' %>>NH</option>
+                                    <option value="NJ" <%= locals.employees[i].state === 'NJ' ? 'selected' : '' %>>NJ</option>
+                                    <option value="NM" <%= locals.employees[i].state === 'NM' ? 'selected' : '' %>>NM</option>
+                                    <option value="NV" <%= locals.employees[i].state === 'NV' ? 'selected' : '' %>>NV</option>
+                                    <option value="NY" <%= locals.employees[i].state === 'NY' ? 'selected' : '' %>>NY</option>
+                                    <option value="OH" <%= locals.employees[i].state === 'OH' ? 'selected' : '' %>>OH</option>
+                                    <option value="OK" <%= locals.employees[i].state === 'OK' ? 'selected' : '' %>>OK</option>
+                                    <option value="OR" <%= locals.employees[i].state === 'OR' ? 'selected' : '' %>>OR</option>
+                                    <option value="PA" <%= locals.employees[i].state === 'PA' ? 'selected' : '' %>>PA</option>
+                                    <option value="RI" <%= locals.employees[i].state === 'RI' ? 'selected' : '' %>>RI</option>
+                                    <option value="SC" <%= locals.employees[i].state === 'SC' ? 'selected' : '' %>>SC</option>
+                                    <option value="SD" <%= locals.employees[i].state === 'SD' ? 'selected' : '' %>>SD</option>
+                                    <option value="TN" <%= locals.employees[i].state === 'TN' ? 'selected' : '' %>>TN</option>
+                                    <option value="TX" <%= locals.employees[i].state === 'TX' ? 'selected' : '' %>>TX</option>
+                                    <option value="UT" <%= locals.employees[i].state === 'UT' ? 'selected' : '' %>>UT</option>
+                                    <option value="VA" <%= locals.employees[i].state === 'VA' ? 'selected' : '' %>>VA</option>
+                                    <option value="VT" <%= locals.employees[i].state === 'VT' ? 'selected' : '' %>>VT</option>
+                                    <option value="WA" <%= locals.employees[i].state === 'WA' ? 'selected' : '' %>>WA</option>
+                                    <option value="WI" <%= locals.employees[i].state === 'WI' ? 'selected' : '' %>>WI</option>
+                                    <option value="WV" <%= locals.employees[i].state === 'WV' ? 'selected' : '' %>>WV</option>
+                                    <option value="WY" <%= locals.employees[i].state === 'WY' ? 'selected' : '' %>>WY</option>
+                                  </select>
+                            </td>
+                            <td>
+                                <input type="text" class="table-text-input" id="edited_commission" name="edited_commission" value="<%= locals.employees[i].commission %>">
+                            </td>
+                            <td class="no-border table-button-element"> 
+                                <input type="hidden" name="employeeID" value="<%= locals.employees[i].employeeID%>">
+                                <button type="submit" href="#" class="btn btn-success btn-sm">
+                                <span class="glyphicon glyphicon-edit"></span> Save
+                                </button>
+                            </td>
+                        </form>
+                        <form method="GET" action="/adminAssociates/">
+                            <td class="no-border table-button-element">
+                                <button href="#" class="btn btn-danger btn-sm">
+                                    <span class="glyphicon glyphicon-remove-circle"></span> Cancel
+                                </button>
+                            </td>
+                        </form>
+                        
+                    <% } else { %>   
+                        <th scope="row" class="table-id-field"><%= locals.employees[i].employeeID %></td>
+                        <td><%= locals.employees[i].username %></td>
+                        <td><%= locals.employees[i].name %></td>
+                        <td><%= locals.employees[i].contact %></td>
+                        <td><%= locals.employees[i].address %></td>
+                        <td><%= locals.employees[i].city %></td>
+                        <td class="table-state-field"><%= locals.employees[i].state %></td>
+                        <td>$<%=locals.employees[i].commission %></td>
+                        <td class="no-border table-button-element">
+                            <form method="POST" action="/adminAssociates/editing_employee">
+                            <input type="hidden" name="employeeID" value="<%= locals.employees[i].employeeID%>">
+                            <button type="submit" href="#" class="btn btn-info btn-sm">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                            </button>
+                            </form>
+                        </td>
+                        <td class="no-border table-button-element">
+                            <!-- Modal -->
+                            <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="removeModalLabel">Fire <%= locals.employees[i].name %>?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                    Are you sure you want to fire <%= locals.employees[i].name %>? This action is irreversible.
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" onclick="confirmRemoveEmployee('<%= locals.employees[i].employeeID %>', '<%= locals.employees[i].name %>')" class="btn btn-danger">Fire them!</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <button href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#removeModal">
+                            <span class="glyphicon glyphicon-remove-circle"></span> Fire!
+                        </button>
+                        </td>
+                    <% } %>
+                </tr>
+            <% } %>
+        </table>
+        <tbody></tbody>
+        <br>
+        <h3>Add a new employee:</h3>
+        <p><%= locals.addEmployeeText %></p>
+        <form method="POST" action="/adminAssociates/add_employee">
+            <label class="center-label">Name</label>
+            <input placeholder="Enter Employee Here" type="text" id="name_input" name="name_input"><br>
+            <label class="center-label">Username</label>
+            <input placeholder="Enter Username Here" type="text" id="username_input" name="username_input"><br>
+            <label class="center-label">Password</label>
+            <input placeholder="Enter Password Here" type="password" id="password_input" name="password_input"><br>
+            <button type="submit">Add New Employee</button>
+        </form>
+
+
+        <script>
+            function confirmRemoveEmployee(employeeID, employeeName) {
+                
+                // create a new XMLHttpRequest object
+                let xhr = new XMLHttpRequest();
+                // Send a post request via javascript
+                xhr.open("POST", "/adminAssociates/remove_employee", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                let payload = {employeeID: employeeID};
+                xhr.send(JSON.stringify(payload));
+
+                // Handle the response from the server
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        // Reload the page to update the table
+                        location.reload();
+                    }
+                };
+                  
+                
+            }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </main>
+    <script src="adminAssociates.js"></script>
+</body>
+</html>

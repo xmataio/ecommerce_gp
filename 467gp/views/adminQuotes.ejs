@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+    initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+	<title>Admin Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .h1{
+            color:rgb(120, 64, 157);
+        }
+        .center-label {
+            display: inline-block;
+            width: 150px;
+            text-align: right;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .table-text-input {
+            width: 130px;
+        }
+
+        .table-id-field {
+            width: 50px;
+            min-width: 50px;
+            max-width: 50px;
+        }
+
+        .table-button-element {
+            width: 80px;
+            min-width: 30px;
+            max-width: 80px;
+        }
+
+        .table-state-field {
+            width: 80px;
+            min-width: 60px;
+            max-width: 80px;
+        }
+
+        /*Style for the main page*/
+        main{
+            margin: 20px auto;
+            text-align: center; 
+        }
+        th, td{
+            border-collapse: collapse;
+            border: 1px solid #000
+        }
+        th, td{
+            padding: 5px;
+        }
+
+        th {
+            text-align: center;  
+        }
+
+        td {
+            width: 200px;
+            min-width: 125px;
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body class="p-3 m-0 border-0 bd-example" >
+    <!-- Example Code -->
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">Plant Repair Services</span>
+            <ul class="nav nav-underline">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">home</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="/adminAssociates">Sales Associates</a></li>
+                <li class="nav-item active"><a class="nav-link active" href="/adminQuotes">Quotes</a></li>
+                <li class="nav-item"><a class="nav-link" href = "/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+
+          
+        <form method="GET" action="/adminQuotes" id="searchForm">
+            <h2>List of all quotes:</h2>
+              
+            <label for="start">Start date:</label>
+            <input type="date" id="start" name="startDate" value="<%= locals.startDate %>" min="2018-01-01" max="<%= locals.endDate %>">
+
+            <label for="end">End date:</label>
+            <input type="date" id="end" name="endDate" value="<%= locals.endDate %>" min="<%= locals.startDate %>">
+            <br>
+            <br>
+            <label for="status">Status:</label>
+            <select name="status" id="status" size="1">
+                <option value="all" <%= locals.status === 'all' ? 'selected' : '' %>>All</option>
+                <option value="finalized" <%= locals.status === 'finalized' ? 'selected' : '' %>>Finalized</option>
+                <option value="sanctioned" <%= locals.status === 'sanctioned' ? 'selected' : '' %>>Sanctioned</option>
+                <option value="ordered" <%= locals.status === 'ordered' ? 'selected' : '' %>>Ordered</option>
+            </select>
+            <label for="associate">Associate:</label>
+            <select name="associate" id="associate" size="1">
+                <option value = "all"
+                        <%= !locals.selectedAssociate || locals.selectedAssociate == 'all' ? 'selected' : '' %> >
+                All
+                </option>
+                <% for(let i = 0; i < locals.associates.length; i++) { %>
+                    <option 
+                        value = <%= locals.associates[i].employeeID %> 
+                        <%= locals.selectedAssociate == locals.associates[i].employeeID ? 'selected' : '' %> 
+                        <%= locals.associates[i].name %>>
+                    <%= locals.associates[i].name %>
+                    </option>
+                <% }%>
+            </select>
+            <label for="customer">Customer:</label>
+            <select name="customer" id="customer" size="1">
+                <option value = "all"
+                        <%= !locals.selectedCustomer || locals.selectedCustomer == 'all' ? 'selected' : '' %> >
+                All
+                </option>
+                <% for(let i = 0; i < locals.customers.length; i++) { %>
+                    <option 
+                        value = <%= locals.customers[i].id %> 
+                        <%= locals.selectedCustomer == locals.customers[i].id ? 'selected' : '' %> 
+                        <%= locals.customers[i].name %>>
+                    <%= locals.customers[i].name %>
+                    </option>
+                <% }%>
+            </select>
+        </form>
+        <br>
+        <table id="quoteTable" id="table" class="table table-hover table-responsive table-striped shadow-lg p-3 mb-5">
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Associate</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Price</th>
+                <th scope="col">Status</th>
+            </thead>
+            
+            <%for(let i = 0; i < locals.quotes.length; i++) { %>
+                <tr>
+                    <td><%=locals.quotes[i].quoteID%></td>
+                    <td><%=locals.quotes[i].dateCreated%></td>
+                    <%if(locals.associates.find(o => o.employeeID == locals.quotes[i].employeeID)) {%>
+                    <td><%=locals.associates.find(o => o.employeeID == locals.quotes[i].employeeID)?.name%></td>
+                    <% } else { %>
+                        <td><%="Fired employee!"%></td>
+                    <% }%>
+                    <td><%=locals.customers.find(o => o.id == locals.quotes[i].customerID)?.name %></td>
+                    <td><%=locals.quotes[i].price%></td>
+                    <td><%=locals.quotes[i].status%></td>
+                </tr>
+
+            <% } %>
+            
+        </table>
+
+        <script>
+            const searchForm = document.getElementById('searchForm');
+            const formElements = searchForm.elements;
+
+            for (let i = 0; i < formElements.length; i++) {
+                const element = formElements[i];
+
+                element.onchange = function() {
+                    console.log("Form changed")
+                    searchForm.submit();
+                };
+            }
+
+            $('#myModal').on('shown.bs.modal', function () {
+                $('#myInput').trigger('focus')
+            })
+        </script>
+    </main>
+</body>
+</html>

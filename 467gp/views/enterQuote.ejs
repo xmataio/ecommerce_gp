@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+    initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+	<title>Enter Quote</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+	<style>
+		.h1{
+			color:rgb(120, 64, 157);
+		}
+	</style>
+</head>
+
+<body class="p-3 m-0 border-0 bd-example">
+
+    <!-- Example Code -->
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">Plant Repair Services</span>
+            <ul class="nav nav-underline">
+				<li class="nav-item">
+					<a class="nav-link" aria-current="page" href="/">home</a>
+			   </li>
+				<li class="nav-item"><a class="nav-link active" href="/enterSalesQuote">Enter Sales Quote</a></li>
+				<li class="nav-item"><a class="nav-link" href="/finalizeQuote">Finalized Quotes</a></li>
+				<li class="nav-item"><a class="nav-link" href="/convertQuote">Convert to Purchase Order</a></li>
+				<li class="nav-item"><a class="nav-link" href = "/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+	<!-- The content of the website -->
+	<h2>Create a New Quote For Customer:</h2>
+	<form id="EnterQuoteForm" action="/enterSalesQuote/enter_quote" method="POST">
+		<label>Select customer:</label>
+		<select name="customerName" id="customerName">connection
+			<% for(let i = 0; i < locals.customers.length; i++) { %>
+				<option id="customerName" value="<%=locals.customers[i].name%>"><%=locals.customers[i].name%></option>
+			<%}%>
+		</select>
+		
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newQuoteModal">
+			New Quote
+		</button>
+		  
+		<div class="modal fade" id="newQuoteModal" tabindex="-1" aria-labelledby="newQuoteModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="newQuoteModalLabel">Enter Sales Quote</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<br>
+					<label>Customer Email:</label>
+					<input type="text" name="customerEmail" id="customerEmail" placeholder="Customer Email">
+					<br>
+					<label>Customer Payment Info:</label>
+					<input type="text" name="customerPaymentInfo" id="customerPaymentInfo" placeholder="Customer Payment Info">
+					<br>
+					<label>Description:</label>
+					<input type="text" name="description" id="description" placeholder="Description">
+					<br>
+					<input type="hidden" name="employeeID" value="<%= locals.employee.employeeID%>">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" id="Create" class="btn btn-primary enter-quote-button">Create Quote</button>
+				</div>
+			</div>
+		</div>	
+		</div>
+	</form>	
+	<p></p>
+
+	<h2>List of current quotes:</h2>
+
+	<% for(let i = 0; i < locals.quotes.length; i++) { %>
+		<div class="card">
+			<div class="card-body">
+				<% if(locals.editQuote != locals.quotes[i].quoteID) { %>
+					<h5 class="card-title">Quote <%= locals.quotes[i].quoteID %></h5>
+					<h6 class="card-subtitle mb-2 text-muted">Customer: <%= locals.customerNames[i] %></h6>
+					<p class="card-text">Customer Email: <%= locals.quotes[i].customerEmail %></p>
+					<p class="card-text">Date: <%= locals.quotes[i].dateCreated %></p>
+					<p class="card-text">Description: <%= locals.quotes[i].description %></p>
+					<p class="card-header">Items:</p>
+					<p class="card-text">Discount: $<%= locals.quotes[i].discount%></p>
+					<p class="card-text">Total: $<%= locals.quotes[i].price - locals.quotes[i].discount %></p>
+					<p class="card-footer">
+						<form method="GET" action="/enterSalesQuote">
+                            <input type="hidden" name="editQuoteID" value="<%= locals.quotes[i].quoteID%>">
+                            <button type="submit" href="#" class="btn btn-info btn-sm">
+                            <span class="glyphicon glyphicon-edit"></span> Edit Quote
+                            </button>
+                        </form>
+						<form method="POST" action="/enterSalesQuote/finalize_quote">
+							<input type="hidden" name="quoteID" value="<%= locals.quotes[i].quoteID%>">
+							<input type="hidden" name="employeeID" value="<%= locals.employee.employeeID%>">
+							<input type="hidden" name="customerName" value="<%= locals.customerNames[i] %>">
+							<input type="hidden" name="customerEmail" value="<%= locals.quotes[i].customerEmail %>">
+							<input type="hidden" name="description" value="<%= locals.quotes[i].description %>">
+						
+
+							<button type="submit" class="btn btn-secondary finalize-quote-button">
+								Finalize Quote
+							</button>
+						</form>
+					</p>
+				<% } else { %>
+					<form id="EditQuoteForm<%=i%>" name="EditQuoteForm<%=i%>" action="/enterSalesQuote/update_quote" method="POST">
+					<% if(locals.failureString.length > 0) { %>
+						<div class="alert alert-danger" role="alert">
+							<% if(locals.failureString == 'invalidEmail') { %>
+								Invalid Email!
+							<% } else if(locals.failureString == 'invalidDiscount') { %>
+								Discount must be a number!
+							<% } %>
+						</div>
+					<% } %>
+					<h5 class="card-title">Quote <%= locals.quotes[i].quoteID %></h5>
+					<h6 class="card-subtitle mb-2 text-muted">Customer: <%= locals.customerNames[i] %></h6>
+					<p class="card-text">Customer Email:</p>
+					<input type="text" name="customerEmail" id="customerEmail" placeholder="Customer Email" value="<%= locals.quotes[i].customerEmail %>">
+					<p class="card-text">Date: <%= locals.quotes[i].dateCreated %></p>
+					<p class="card-text"></p>
+					<p class="card-text">Description:</p>
+					<input type="text" name="description" id="description" placeholder="Description" value="<%= locals.quotes[i].description %>">
+					<p class="card-text"></p>
+					<p class="card-text">Discount:</p>
+					<input type="text" name="discount" id="discount" placeholder="$" value="<%= locals.quotes[i].discount %>">
+					<p class="card-text"></p>
+					<p class="card-text">Items:</p>
+					<table class="table-line-items">
+						<thead>
+							<th scope="col">Description</th>
+							<th scope="col">Price</th>
+							<th scope="col"></th>
+						</thead>
+						<tbody class="item-list">
+							<% for(let j = 0; j < locals.lineItems.length; j++) { %>
+								<%if(locals.lineItems[j].quoteID == locals.quotes[i].quoteID) { %> 
+									<tr>
+										<input type="hidden" name="lineItemID" value="<%= locals.lineItems[j].lineItemID %>">
+										<td><input type="text" name="lineItem<%=j%>" id="lineItem<%=j%>" placeholder="Line Item" value="<%= locals.lineItems[j].description %>"></td>
+										<td><input type="text" pattern="[0-9]*" name="itemPrice<%=j%>" id="itemPrice<%=j%>" placeholder="Line Item Price" value="<%= locals.lineItems[j].price %>"></td>
+										<td><div class="btn-group" role="group" aria-label="Basic mixed styles example">
+											<button class="btn btn-warning removeLineItem">🗑</button>
+										</div></td>
+									</tr>
+								<% } %>
+							<% } %>
+
+
+							<tr><td><input type="text" name="newLineDescription"
+								id="newLineDescription" class="newLineDescription" placeholder="Description" value=""></td>
+
+							<td><input type="text" pattern="[0-9]*" name="newLinePrice" id="newLinePrice"  class="newLinePrice" placeholder="$" value="0"></td>
+
+							<td><div class="btn-group" role="group" aria-label="Basic mixed styles example">
+								<button class="btn btn-success insert-line-item">✔</button>
+								<button type="button" class="btn btn-warning clear-line-item">X</button>
+							</div></td></tr>
+						</tbody>
+					</table>
+					<input type="hidden" name="employeeID" value="<%= locals.employee.employeeID%>">
+					<input type="hidden" name="customerName" value="<%= locals.customerNames[i] %>">
+					<input type="hidden" name="quoteID" value="<%= locals.quotes[i].quoteID %>">
+					<p class="card-text">
+						
+						<button type="submit" href="#" class="btn btn-success">
+						<span class="glyphicon glyphicon-edit"></span> Save Changes
+						</button>
+
+						
+					</p>
+				</form>
+				
+
+				<p class="card-text">
+					<form id="Cancel<%=i%>" name="CancelQuote<%=i%>" action="/enterSalesQuote" method="GET">
+						<button type="submit" href="#" class="btn btn-info">
+							<span class="glyphicon glyphicon-edit"></span> Cancel
+						</button>
+					</form>
+				</p>
+					
+				<%	} %>
+			</div>
+		</div>
+	<% } %>
+
+
+	<script>
+
+		document.addEventListener("DOMContentLoaded", function(event) {
+		
+			const forms = document.querySelectorAll("form");
+
+			forms.forEach(function(form) {
+
+
+				const clearLineItemButtons = document.querySelectorAll(".clear-line-item");
+
+				const insertLineItemButtons = document.querySelectorAll(".insert-line-item");
+
+				const removeLineItemButtons = document.querySelectorAll(".removeLineItem");
+
+
+				for (let i = 0; i < clearLineItemButtons.length; i++) {
+					clearLineItemButtons[i].addEventListener("click", function(event) {
+						event.preventDefault(); // prevent default form submission behavior
+						const enterNewLineItems = document.getElementsByClassName('newLineDescription');
+						const newitemPrices = document.getElementsByClassName('newLinePrice');
+
+						for (let j = 0; j < enterNewLineItems.length; j++) {
+							enterNewLineItems[j].value = '';
+							newitemPrices[j].value = 0;
+						}
+					});
+				}
+
+				for (let i = 0; i < insertLineItemButtons.length; i++) {
+					insertLineItemButtons[i].addEventListener("click", function(event) {
+						event.preventDefault(); // prevent default form submission behavior
+						form.action = "/enterSalesQuote/insert_line_item"; // set action to endpoint 2
+						
+						form.submit(); // submit the form
+					});
+				}
+
+				for (let i = 0; i < removeLineItemButtons.length; i++) {
+					removeLineItemButtons[i].addEventListener("click", function(event) {
+						event.preventDefault(); // prevent default form submission behavior
+						form.action = "/enterSalesQuote/remove_line_item"; // set action to endpoint 2
+						form.method = "POST";
+						form.submit(); // submit the form
+					});
+				}
+
+			});
+			
+		});
+
+		
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	
+</body>
+</html>
