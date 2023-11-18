@@ -14,11 +14,11 @@ The website was implemented using the following:
 
 ## How to Access
 ### Preconditions
-This website can only be run on your local machine due to NIU's servers not allowing the installation of Node.js and its related packages. NIU's MariaDB servers however, can still be accessed through your local machine.
+This website can only be run on your local machine due to NIU's servers not allowing the installation of Node.js and its related packages. NIU's MariaDB servers, however, can still be accessed through your local machine.
 ### Installing Node.js / npm
 The following link will bring you to the installation page for Node.js; download the installer for your respective OS and follow the instructions.
-- Node.js Installation Page: https://nodejs.org/en/download
-To check and see if the installation was successful, run the following command in your terminal: `node -v`
+- Node.js Installation Page: https://nodejs.org/en/download<br/>
++ To check and see if the installation was successful, run the following command in your terminal: `node -v`
 To ensure that npm was installed also, run the following command: `npm -v`
 ### Setting Up the Website
 1. To host the website on your machine, clone this repository with the following command: `git clone https://github.com/xmataio/ecommerce_gp.git`
